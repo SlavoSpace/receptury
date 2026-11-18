@@ -15,4 +15,4 @@ i adresów osób; wszystko przychodzi z funkcji bazy `receptury_*` i `firmino_to
 Jeden plik `index.html`: ten sam szablon i ta sama logika co w pokazie modułu, mały silnik szablonu bez bibliotek,
 logowanie przez wspólne okno dysza.app (login z karty i PIN z managera).
 
-Wersja 1.0 · 2026-11-18 15:17 · 59fb90a
+Wersja 1.1 · 2026-11-18 16:22 · 9937b5e

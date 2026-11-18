@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Receptury">
 <meta name="robots" content="noindex, nofollow">
-<meta name="receptury-wersja" content="1.0 · 2026-11-18 15:17 · 59fb90a">
+<meta name="receptury-wersja" content="1.1 · 2026-11-18 16:22 · 9937b5e">
 <title>Receptury</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="favicon.png">
 <style>
@@ -400,7 +400,7 @@ a{color:#1C4F8F}a:hover{color:#13201A}
                 <sc-if value="{{d.zes.wSklepie}}" hint-placeholder-val="{{true}}">
                   <div style="display: flex; flex-direction: column; gap: 4px">
                     <span style="font-size: 18px; font-weight: 800">{{d.nazwa}}</span>
-                    <span style="font-size: 13px; color: var(--tekst2)">{{d.zes.kawTekst}} · alergeny: {{d.zes.alergeny}}</span>
+                    <span style="font-size: 13px; color: var(--tekst2)">{{d.zes.sklepOpis}}</span>
                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px">
                       <span style="font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums">{{d.zes.cena}}</span>
                       <span style="min-height: 40px; padding: 0 16px; border-radius: 12px; background: var(--akcja); color: var(--naAkcji); font-size: 14px; font-weight: 800; display: inline-flex; align-items: center">Do koszyka</span>
@@ -470,8 +470,24 @@ a{color:#1C4F8F}a:hover{color:#13201A}
               <p style="margin: 0; padding: 18px 16px; border-top: 1px solid var(--linia); font-size: 14px; color: var(--tekst3)">Pusto — dodaj pierwszy składnik.</p>
             </sc-if>
             <div style="padding: 12px 16px 14px; border-top: 1px solid var(--linia); display: flex; flex-direction: column; gap: 10px">
-              <button type="button" onClick="{{c.dodaj}}" style="align-self: flex-start; min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--ramka2); font-size: 14px; font-weight: 700">{{c.dodajEtykieta}}</button>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                <button type="button" onClick="{{c.dodaj}}" style="min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--ramka2); font-size: 14px; font-weight: 700">{{c.dodajEtykieta}}</button>
+                <sc-if value="{{c.mozeWybor}}" hint-placeholder-val="{{false}}">
+                  <button type="button" onClick="{{c.dodajWybor}}" style="min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1px dashed var(--mocRamka); color: var(--mocTekst); font-size: 14px; font-weight: 700">+ Wybór klienta (gratis)</button>
+                </sc-if>
+              </div>
               <sc-if value="{{c.pkOtwarty}}" hint-placeholder-val="{{false}}">
+                <sc-if value="{{c.pkGrupa}}" hint-placeholder-val="{{false}}">
+                  <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 12px; background: var(--mocTlo); border: 1px solid var(--mocRamka)">
+                    <input type="text" autocomplete="off" aria-label="Nazwa wyboru klienta" value="{{c.grNazwaTxt}}" onChange="{{c.grUstawNazwe}}" style="width: 100%; min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--mocRamka); background: var(--pow); font-size: 15px; font-weight: 700">
+                    <span style="font-size: 13px; font-weight: 600; color: var(--mocTekst)">{{c.grOpis}}</span>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                      <sc-for list="{{c.grOpcje}}" as="o" hint-placeholder-count="3">
+                        <button type="button" aria-label="{{o.usunEtykieta}}" onClick="{{o.usun}}" style="min-height: 36px; padding: 0 10px; border-radius: 9px; border: 1px solid var(--mocRamka); background: var(--pow); font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px">{{o.nazwa}} <span aria-hidden="true" style="color: var(--tekst3)">×</span></button>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
                 <input type="search" aria-label="Szukaj składnika" placeholder="{{c.pkPodpowiedz}}" autocomplete="off" value="{{c.pkSzukaj}}" onChange="{{c.pkUstaw}}" style="width: 100%; min-height: 44px; padding: 0 14px; border-radius: 11px; border: 1px solid var(--moc); background: var(--pow2); font-size: 15px">
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px">
                   <sc-for list="{{c.pkWyniki}}" as="x" hint-placeholder-count="6">
@@ -1605,6 +1621,29 @@ class Component extends DCLogic {
     this.setState({ P, nId: id, zm: Object.assign({}, s.zm, { [kod]: true }), pk: null });
   }
 
+  // wybór klienta (np. gratis +6 do wyboru z trzech rolek): grupa opcji w składzie zestawu, koszt liczony średnio (decyzja z 18.11)
+  dodajWybor(kod) {
+    const s = this.state;
+    const id = (s.nId || 0) + 1;
+    const P = Object.assign({}, s.P);
+    const it = this.kopia(P[kod]);
+    it.s = (it.s || []).concat([{ id, wyb: 'Gratis · wybór klienta', ile: 1, opc: [] }]);
+    P[kod] = it;
+    this.setState({ P, nId: id, zm: Object.assign({}, s.zm, { [kod]: true }), pk: { lista: 's', szukaj: '', grupa: id } });
+  }
+
+  dodajOpcje(kod, lista, gid, k) {
+    this.zmienPoz(kod, (it) => { (it[lista] || []).forEach((w) => { if (w.id === gid && w.opc.indexOf(k) < 0) w.opc = w.opc.concat([k]); }); });
+  }
+
+  usunOpcje(kod, lista, gid, k) {
+    this.zmienPoz(kod, (it) => { (it[lista] || []).forEach((w) => { if (w.id === gid) w.opc = w.opc.filter((x) => x !== k); }); });
+  }
+
+  ustawNazweWyboru(kod, lista, gid, raw) {
+    this.zmienPoz(kod, (it) => { (it[lista] || []).forEach((w) => { if (w.id === gid) w.wyb = raw; }); }, { [kod + '|wyb|' + gid]: raw });
+  }
+
   zapisz(kod) {
     const s = this.state;
     const w = s.wer[kod] || { nr: s.P[kod] && s.P[kod].nowy ? 0 : 1, od: '18.11.2026', hist: [] };
@@ -1860,7 +1899,7 @@ class Component extends DCLogic {
     d.sr = { maTowar: false, tow: { kod: '', nazwa: '', jm: '', idz: noop }, jmF: '', przTxt: '', ustawPrz: noop, maWyd: false, wydTxt: '', ustawWyd: noop, jedn: [], wynik: '', edytowalny: false, alergeny: [], algOpis: '', algStatus: { tekst: '', styl: '' }, mozePotwierdzic: false, potwierdz: noop };
     d.pol = { wychTxt: '', ustawWych: noop, jedn: [], ubytek: '' };
     d.pro = { kawTxt: '', ustawKaw: noop, osobnoOpis: '', osobnoEtykieta: '', osobno: noop };
-    d.zes = { warianty: [], dysza: '', dyszaTxt: '', ustawDysze: noop, podpowiedzi: [], maMoc: false, tabletOpis: '', maZgodnosc: false, zgodnosc: { tekst: '', styl: '' }, kawTekst: '', cenaTxt: '', ustawCene: noop, mocTxt: '', ustawMoc: noop, kanaly: [], alergeny: '', cena: '', moc: '', wSklepie: false, wTablecie: false, bezSklepu: false, bezTabletu: false, nigdzie: false };
+    d.zes = { warianty: [], dysza: '', dyszaTxt: '', ustawDysze: noop, podpowiedzi: [], maMoc: false, tabletOpis: '', sklepOpis: '', maZgodnosc: false, zgodnosc: { tekst: '', styl: '' }, kawTekst: '', cenaTxt: '', ustawCene: noop, mocTxt: '', ustawMoc: noop, kanaly: [], alergeny: '', cena: '', moc: '', wSklepie: false, wTablecie: false, bezSklepu: false, bezTabletu: false, nigdzie: false };
     d.roz = { widoczny: false, naEtykieta: '', nTxt: '', nEtykieta: '', ustawN: noop, wiersze: [], razem: '', pusty: true, maBraki: false, braki: '' };
     d.gdz = { widoczny: false, wiersze: [], pusty: true };
     if ((poz === 'TOW' && !t) || (poz !== 'TOW' && !it)) { d.nic = true; return d; }
@@ -1981,31 +2020,40 @@ class Component extends DCLogic {
     const karta = (lista, tytul, opis) => {
       const wiersze = (it[lista] || []).map((w) => this.wierszSkladu(s, P, it, lista, w, mk));
       const otwarty = !!(s.pk && s.pk.lista === lista);
+      const grupa = otwarty && s.pk.grupa ? (it[lista] || []).filter((w) => w.wyb && w.id === s.pk.grupa)[0] || null : null;
       const dozw = mozliwe(lista);
       let wyniki = [];
       if (otwarty) {
         const qq = this.norm(s.pk.szukaj);
-        wyniki = Object.keys(P).filter((k) => dozw.indexOf(P[k].poz) >= 0 && k !== it.kod && !this.zawiera(P, k, it.kod))
+        wyniki = Object.keys(P).filter((k) => dozw.indexOf(P[k].poz) >= 0 && k !== it.kod && !this.zawiera(P, k, it.kod) && !(grupa && grupa.opc.indexOf(k) >= 0))
           .filter((k) => !qq || this.norm(k + ' ' + this.kodW(k) + ' ' + P[k].nazwa + ' ' + (P[k].tow || '')).indexOf(qq) >= 0)
           .sort((a, b) => (dozw.indexOf(P[a].poz) - dozw.indexOf(P[b].poz)) || (a < b ? -1 : 1))
           .slice(0, 24)
           .map((k) => {
             const cc = this.koszt(P, k, mk);
             const x = P[k];
-            return { kod: this.kodW(k), nazwa: x.nazwa, opis: cc.ok ? (this.bazowe(x) || x.poz === 'POL' ? this.jednostkaKosztu(x.poz === 'POL' ? { jedn: x.jedn } : x, cc.z) : this.zl(cc.z) + ' / szt.') : 'bez kosztu', dodaj: () => this.dodaj(it.kod, lista, k) };
+            return { kod: this.kodW(k), nazwa: x.nazwa, opis: cc.ok ? (this.bazowe(x) || x.poz === 'POL' ? this.jednostkaKosztu(x.poz === 'POL' ? { jedn: x.jedn } : x, cc.z) : this.zl(cc.z) + ' / szt.') : 'bez kosztu',
+              dodaj: grupa ? () => this.dodajOpcje(it.kod, lista, grupa.id, k) : () => this.dodaj(it.kod, lista, k) };
           });
       }
       const sum = this.kosztWierszy(P, it[lista], mk);
       return {
         tytul, opis, wiersze, pusty: wiersze.length === 0,
-        suma: this.zl(sum.z),
+        suma: sum.ok ? this.zl(sum.z) : this.zl(sum.z) + ' · bez ' + sum.braki.slice(0, 2).map((k) => (P[k] ? P[k].nazwa : k)).join(', ') + (sum.braki.length > 2 ? '…' : ''),
         dodaj: () => this.setState({ pk: otwarty ? null : { lista, szukaj: '' } }),
-        dodajEtykieta: otwarty ? 'Zamknij wybór' : '+ Dodaj składnik',
+        dodajEtykieta: otwarty ? (grupa ? 'Gotowe' : 'Zamknij wybór') : '+ Dodaj składnik',
+        mozeWybor: it.poz === 'ZES' && lista === 's' && !otwarty,
+        dodajWybor: () => this.dodajWybor(it.kod),
+        pkGrupa: !!grupa,
+        grNazwaTxt: grupa ? (s.txt[it.kod + '|wyb|' + grupa.id] !== undefined ? s.txt[it.kod + '|wyb|' + grupa.id] : grupa.wyb) : '',
+        grUstawNazwe: (e) => { if (grupa) this.ustawNazweWyboru(it.kod, lista, grupa.id, e.target.value); },
+        grOpis: grupa ? (grupa.opc.length ? 'Klient wybiera ' + this.fN(grupa.ile) + ' z ' + grupa.opc.length + ' — koszt liczony średnio. Stuknij opcję, żeby ją usunąć.' : 'Dodaj opcje z listy poniżej — np. trzy rolki, z których klient wybiera gratis.') : '',
+        grOpcje: grupa ? grupa.opc.map((k) => ({ nazwa: (P[k] ? P[k].nazwa : k), usun: () => this.usunOpcje(it.kod, lista, grupa.id, k), usunEtykieta: 'Usuń opcję: ' + (P[k] ? P[k].nazwa : k) })) : [],
         pkOtwarty: otwarty,
         pkSzukaj: otwarty ? s.pk.szukaj : '',
-        pkUstaw: (e) => this.setState({ pk: { lista, szukaj: e.target.value } }),
+        pkUstaw: (e) => this.setState({ pk: Object.assign({}, this.state.pk, { lista, szukaj: e.target.value }) }),
         pkWyniki: wyniki, pkPusty: otwarty && wyniki.length === 0,
-        pkPodpowiedz: 'Szukaj: ' + dozw.map((x) => ({ SUR: 'surowce', POL: 'półprodukty', PRO: 'produkty', OA: 'opakowania' }[x])).join(', ')
+        pkPodpowiedz: (grupa ? 'Opcje wyboru: ' : 'Szukaj: ') + dozw.map((x) => ({ SUR: 'surowce', POL: 'półprodukty', PRO: 'produkty', OA: 'opakowania' }[x])).join(', ')
       };
     };
     const nKlucz = it.kod + '|' + poz;
@@ -2099,12 +2147,13 @@ class Component extends DCLogic {
     d.kod = poz === 'PACZ' ? 'PACZ-' + it.kod : it.kod;
     d.poziomNazwa = poz === 'PACZ' ? 'Paczka · dowóz i odbiór' : poz === 'TAL' ? 'Talerz · stolik' : 'Zestaw';
     const kw = this.kawalki(P, it.kod);
-    const kawTekst = kw.gratis ? this.fN(kw.baza, 0) + ' + ' + this.fN(kw.gratis, 0) + ' = ' + this.fN(kw.baza + kw.gratis, 0) + ' szt.' : this.fN(kw.baza, 0) + ' szt.';
+    const maKaw = kw.baza + kw.gratis > 0;
+    const kawTekst = !maKaw ? '—' : kw.gratis ? this.fN(kw.baza, 0) + ' + ' + this.fN(kw.gratis, 0) + ' = ' + this.fN(kw.baza + kw.gratis, 0) + ' szt.' : this.fN(kw.baza, 0) + ' szt.';
     const fc = it.cena > 0 && c.ok ? c.z / (it.cena / 1.08) * 100 : null;
     const np = Math.max(0, (it.n30 || 0) - (it.n30t || 0));
     const nWar = poz === 'PACZ' ? np : poz === 'TAL' ? (it.n30t || 0) : (it.n30 || 0);
     d.kafle = [
-      kafel('Kawałki', kawTekst, kw.gratis ? 'z gratisem' : ''),
+      kafel('Kawałki', kawTekst, !maKaw ? 'bez produktów — np. zupa, sos' : kw.gratis ? 'z gratisem' : ''),
       kafel(poz === 'PACZ' ? 'Koszt paczki' : poz === 'TAL' ? 'Koszt talerza' : 'Koszt surowca', c.ok ? this.zl(c.z) : '—', poz === 'ZES' ? 'bez opakowań' : 'w tym dodatki ' + this.zl(c.opak)),
       kafel('Cena', it.cena > 0 ? this.zl(it.cena) : '—', 'brutto · z DYSZY'),
       kafel('Food cost', fc !== null ? this.fN(fc, 1) + '%' : '—', 'od ceny netto (VAT 8%)'),
@@ -2138,7 +2187,8 @@ class Component extends DCLogic {
       },
       podpowiedzi: this.podpowiedziDyszy(),
       maMoc: this.maMoc(),
-      tabletOpis: kawTekst + (this.maMoc() ? ' · moc ' + (it.moc ? it.moc + ' P' : '— P') : ''),
+      tabletOpis: [maKaw ? kawTekst : '', this.maMoc() ? 'moc ' + (it.moc ? it.moc + ' P' : '— P') : '', 'alergeny: ' + (alg.length ? alg.map((a) => this.ALG[a]).join(', ') : 'brak w danych')].filter(Boolean).join(' · '),
+      sklepOpis: [maKaw ? kawTekst : '', 'alergeny: ' + (alg.length ? alg.map((a) => this.ALG[a]).join(', ') : 'brak w danych') + (algNie ? ' (do potwierdzenia: ' + algNie + ' ' + (algNie === 1 ? 'surowiec' : algNie % 10 >= 2 && algNie % 10 <= 4 && (algNie % 100 < 10 || algNie % 100 >= 20) ? 'surowce' : 'surowców') + ')' : '')].filter(Boolean).join(' · '),
       maZgodnosc: !!zgodnosc, zgodnosc: zgodnosc || pig('', 'cicha'),
       kawTekst,
       cenaTxt: s.txt[kl + '|cena'] !== undefined ? s.txt[kl + '|cena'] : (it.cena ? this.f(it.cena, 2) : ''),
@@ -2221,11 +2271,11 @@ class Component extends DCLogic {
     };
     if (w.wyb) {
       const n = w.opc.length || 1;
-      let z = 0;
-      w.opc.forEach((o) => { z += this.koszt(P, o, mk).z / n; });
+      let z = 0; let okW = true;
+      w.opc.forEach((o) => { const co = this.koszt(P, o, mk); z += co.z / n; if (!co.ok) okW = false; });
       return Object.assign(wspolne, {
-        kod: 'WYBÓR', nazwa: w.wyb, opis: w.opc.map((o) => (P[o] ? P[o].nazwa : o)).join(' / ') + ' · liczony średnio',
-        jedn: '×', koszt: this.zl(z * w.ile), idz: () => { if (w.opc[0]) this.idzDoPozycji(w.opc[0]); },
+        kod: 'WYBÓR', nazwa: w.wyb || 'Wybór klienta', opis: w.opc.length ? w.opc.map((o) => (P[o] ? P[o].nazwa : o)).join(' / ') + ' · liczony średnio' : 'bez opcji — stuknij, żeby je dodać',
+        jedn: '×', koszt: okW ? this.zl(z * w.ile) : '—', idz: () => this.setState({ pk: { lista, szukaj: '', grupa: w.id } }),
         etykieta: 'Ilość: ' + w.wyb, usunEtykieta: 'Usuń: ' + w.wyb
       });
     }
@@ -2554,7 +2604,7 @@ class Receptury extends Component {
     const s = this.state; const P = s.P;
     const pref = it.kod + '|';
     for (const k of Object.keys(s.txt || {})) {
-      if (k.indexOf(pref) !== 0 || k === pref + 'dysza') continue;
+      if (k.indexOf(pref) !== 0 || k === pref + 'dysza' || k.indexOf(pref + 'wyb|') === 0) continue;
       const raw = String(s.txt[k]).trim();
       if (raw === '') { if (k === pref + 'cena') continue; return 'Uzupełnij puste pole z liczbą albo odrzuć zmiany.'; }
       if (this.liczba(raw) === null) return '„' + raw + '” to nie liczba — popraw pole.';
@@ -2573,6 +2623,7 @@ class Receptury extends Component {
     for (const l of listy) {
       for (const w of (it[l] || [])) {
         if (!(w.ile > 0)) return 'Ilość w składzie musi być większa od zera.';
+        if (w.wyb && !w.opc.length) return 'Wybór klienta „' + (String(w.wyb || '').trim() || 'bez nazwy') + '” nie ma opcji — dodaj co najmniej jedną albo usuń wybór.';
         for (const k of (w.wyb ? w.opc : [w.k])) {
           if (!P[k]) return 'Składnika ' + this.kodW(k) + ' nie ma na liście.';
           if (P[k].nowy) return 'Najpierw zapisz ' + this.kodW(k) + ' (' + P[k].nazwa + ') — to jeszcze szkic.';
