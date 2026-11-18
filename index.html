@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Receptury">
 <meta name="robots" content="noindex, nofollow">
-<meta name="receptury-wersja" content="1.1 · 2026-11-18 16:22 · 9937b5e">
+<meta name="receptury-wersja" content="1.2 · 2026-11-18 17:01 · 226d633">
 <title>Receptury</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="favicon.png">
 <style>
@@ -87,7 +87,7 @@ a{color:#1C4F8F}a:hover{color:#13201A}
     </div>
     <div style="display: flex; align-items: center; gap: 8px; flex: 0 0 auto">
       <button type="button" aria-label="Jak czytać receptury" onClick="{{pokazPomoc}}" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 11px">
-        <span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 50%; background: var(--mocTlo); border: 1.5px solid var(--mocRamka); color: var(--mocTekst); font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center">i</span>
+        <span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 50%; background: var(--mocTlo); border: 1.5px solid var(--mocRamka); color: var(--mocTekst); font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center">?</span>
       </button>
       <button type="button" aria-label="{{motywEtykieta}}" onClick="{{zmienMotyw}}" style="width: 44px; height: 44px; border-radius: 11px; border: 1px solid var(--ramka); background: var(--pow); color: var(--tekst2); display: flex; align-items: center; justify-content: center">
         <sc-if value="{{jasny}}" hint-placeholder-val="{{true}}">
@@ -97,6 +97,9 @@ a{color:#1C4F8F}a:hover{color:#13201A}
           <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
         </sc-if>
       </button>
+      <sc-if value="{{nag.maInfo}}" hint-placeholder-val="{{false}}">
+        <a class="info-i" href="{{nag.info}}" target="_blank" rel="noopener" aria-label="Instrukcja receptury.dysza.app (PDF)" style="width: 44px; height: 44px; flex: none; border-radius: 50%; background: #2f74c0; color: #ffffff; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: 700; font-size: 26px; line-height: 1; display: flex; align-items: center; justify-content: center; text-decoration: none">i</a>
+      </sc-if>
       <div class="kto" style="height: 44px; padding: 0 12px 0 6px; border-radius: 11px; border: 1px solid var(--ramka); background: var(--pow); display: flex; align-items: center; gap: 8px">
         <span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 50%; background: var(--pow3); border: 2px solid var(--mRec); color: var(--mRec); display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 800">{{nag.inicjaly}}</span>
         <span class="kto-tekst" style="display: flex; flex-direction: column; line-height: 1.15">
@@ -123,7 +126,7 @@ a{color:#1C4F8F}a:hover{color:#13201A}
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px">
           <div style="padding: 10px 12px; border-radius: 12px; background: var(--pow2); border: 1px solid var(--linia); font-size: 13.5px"><strong>Towar</strong> — pozycja z FIRMINO w jednostce zakupu: kilogram, opakowanie, karton.</div>
           <div style="padding: 10px 12px; border-radius: 12px; background: var(--pow2); border: 1px solid var(--linia); font-size: 13.5px"><strong>Surowiec</strong> — towar gotowy do receptur: przelicznik na g, ml albo szt. i wydajność po obróbce (łosoś 65%).</div>
-          <div style="padding: 10px 12px; border-radius: 12px; background: var(--pow2); border: 1px solid var(--linia); font-size: 13.5px"><strong>Półprodukt</strong> — partia: składniki i ile z niej wychodzi (1 kg suchego ryżu daje 2,3 kg ryżu do sushi).</div>
+          <div style="padding: 10px 12px; border-radius: 12px; background: var(--pow2); border: 1px solid var(--linia); font-size: 13.5px"><strong>Półprodukt</strong> — partia: składniki i ile z niej wychodzi, w g, ml albo szt. (1 kg suchego ryżu daje 2,3 kg ryżu do sushi; wywar liczymy w ml).</div>
           <div style="padding: 10px 12px; border-radius: 12px; background: var(--pow2); border: 1px solid var(--linia); font-size: 13.5px"><strong>Produkt</strong> — rolka albo danie na 1 szt.: gramatury i liczba kawałków.</div>
           <div style="padding: 10px 12px; border-radius: 12px; background: var(--pow2); border: 1px solid var(--linia); font-size: 13.5px"><strong>Zestaw</strong> — wszystko, co sprzedajemy: produkty, gratis do wyboru klienta i dodatki; pojedyncza rolka, napój czy sos to zestaw z jednym produktem. Wydawany jako paczka (z opakowaniami) albo talerz (stolik).</div>
           <div style="padding: 10px 12px; border-radius: 12px; background: var(--pow2); border: 1px solid var(--linia); font-size: 13.5px"><strong>Wersje</strong> — zapis zmiany tworzy nową wersję od jutra; zużycie za minione dni liczy się według wersji, która wtedy obowiązywała.</div>
@@ -1293,7 +1296,7 @@ class Component extends DCLogic {
   eksportData() { return (this.EKSPORT && this.EKSPORT.dzien) || '18.11'; }
   eksportOpis() { return 'Eksport z FIRMINO · 18.11.2026'; }
   eksportPlik() { return 'Eksport Produkty_2026-11-18.csv'; }
-  naglowek() { return { maChip: true, chip: 'POKAZ · DYSZA 2.0', inicjaly: '', imie: '', rola: '', mozeWyloguj: false, wyloguj: () => {} }; }
+  naglowek() { return { maChip: true, chip: 'POKAZ · DYSZA 2.0', inicjaly: '', imie: '', rola: '', mozeWyloguj: false, wyloguj: () => {}, maInfo: false, info: '' }; }
   stopka() {
     return 'Pokaz receptury.dysza.app · towary i ceny zakupu (netto): eksport FIRMINO z 18.11.2026, 311 pozycji · nazwy, ceny i sprzedaż zestawów: DYSZA, 19.10–17.11.2026 · moc P: przelicznik Tablicy Mocy · przeliczniki: automatyczne z jednostek FIRMINO i 13 z PRZELICZNIKI-FIRMINO (29.09) · składy, gramatury, wydajności i przeliczniki oznaczone „przykład”: do ustalenia przez Dyrektora Produkcji · alergeny: wstępnie z nazw towarów. Zmiany w pokazie żyją do odświeżenia strony.';
   }
@@ -1833,7 +1836,7 @@ class Component extends DCLogic {
         const it = P[k];
         const c = this.kosztPelny(P, k, wariant, mk);
         let meta = '—';
-        if (zrodlo === 'POL') meta = c.ok ? (it.jedn === 'szt' ? this.zl(c.z) + ' / szt.' : this.zl(c.z * 1000) + ' / kg') : '—';
+        if (zrodlo === 'POL') meta = c.ok ? this.jednostkaKosztu(it, c.z) : '—';
         else if (zrodlo === 'PRO') meta = (c.ok ? this.zl(c.z) : '—') + ' · ' + (it.kaw || 0) + ' szt.';
         else meta = (poz === 'PACZ' ? 'paczka ' : poz === 'TAL' ? 'talerz ' : '') + (c.ok ? this.zl(c.z) : '—');
         const zm = !!s.zm[k];
@@ -2088,25 +2091,29 @@ class Component extends DCLogic {
       d.jestPol = true; d.jestSklad = true;
       d.kod = this.kodW(it.kod); d.poziomNazwa = 'Półprodukt · partia';
       const wej = this.masaWejscia(P, it, mm);
-      const ubytek = it.jedn === 'g' && wej > 0 && it.wych > 0 ? (1 - it.wych / wej) * 100 : null;
+      const szt = it.jedn === 'szt', ml = it.jedn === 'ml';
+      const jw = szt ? 'szt.' : it.jedn;          // jednostka partii: g, ml albo szt.
+      const duza = ml ? 'l' : 'kg';               // 1000 g = 1 kg, 1000 ml = 1 l
+      const ok = ml ? 'ok. ' : '';                // wsad w gramach, a partia w ml — liczę 1 ml ≈ 1 g
+      const ubytek = !szt && wej > 0 && it.wych > 0 ? (1 - it.wych / wej) * 100 : null;
       const nomB = nom[it.kod] || 0;
       const c1 = this.koszt(P, it.kod, mk);
       d.kafle = [
-        kafel('Z partii wychodzi', this.fN(it.wych) + ' ' + (it.jedn === 'szt' ? 'szt.' : 'g'), it.jedn === 'g' ? 'wsad ' + this.fN(wej) + ' g' : (it.g1 ? 'ok. ' + this.fN(it.g1) + ' g / szt.' : '')),
+        kafel('Z partii wychodzi', this.fN(it.wych) + ' ' + jw, !szt ? 'wsad ' + ok + this.fN(wej) + ' g' : (it.g1 ? 'ok. ' + this.fN(it.g1) + ' g / szt.' : '')),
         kafel('Koszt partii', c1.ok ? this.zl(c1.z * it.wych) : '—', 'surowce bez wody'),
-        kafel(it.jedn === 'szt' ? 'Koszt 1 szt.' : 'Koszt 1 kg', c1.ok ? this.zl(it.jedn === 'szt' ? c1.z : c1.z * 1000) : '—', ubytek !== null ? 'ubytek w partii ' + this.fN(ubytek, 1) + '%' : ''),
-        kafel('Nominalnie 30 dni', nomB ? (it.jedn === 'szt' ? this.fN(nomB, 0) + ' szt.' : this.fN(nomB / 1000) + ' kg') : '—', nomB ? this.fN(nomB / it.wych, 1) + ' partii' : 'nieużywany w zestawach')
+        kafel(szt ? 'Koszt 1 szt.' : 'Koszt 1 ' + duza, c1.ok ? this.zl(szt ? c1.z : c1.z * 1000) : '—', ubytek !== null ? 'ubytek w partii ' + ok + this.fN(ubytek, 1) + '%' : ''),
+        kafel('Nominalnie 30 dni', nomB ? (szt ? this.fN(nomB, 0) + ' szt.' : this.fN(nomB / 1000) + ' ' + duza) : '—', nomB ? this.fN(nomB / it.wych, 1) + ' partii' : 'nieużywany w zestawach')
       ];
       d.karty = [karta('s', 'Partia', 'Składniki jednej partii — tak jak na kuchni, z wodą')];
       const kl = it.kod;
       d.pol = {
         wychTxt: s.txt[kl + '|wych'] !== undefined ? s.txt[kl + '|wych'] : this.fN(it.wych, 3),
         ustawWych: (e) => this.poleLiczbowe(kl, 'wych', e.target.value, 0),
-        jedn: [['g', 'g'], ['szt', 'szt.']].map((j) => ({ etykieta: j[1], wl: it.jedn === j[0], styl: segStyl(it.jedn === j[0]), wybierz: () => this.zmienPoz(kl, (x) => { x.jedn = j[0]; }) })),
-        ubytek: ubytek !== null ? 'Wsad ' + this.fN(wej) + ' g → wychodzi ' + this.fN(it.wych) + ' g · ubytek ' + this.fN(ubytek, 1) + '% (parowanie, obróbka)' : 'Partia liczona w sztukach — koszt dzieli się na ' + this.fN(it.wych) + ' szt.'
+        jedn: [['g', 'g'], ['ml', 'ml'], ['szt', 'szt.']].map((j) => ({ etykieta: j[1], wl: it.jedn === j[0], styl: segStyl(it.jedn === j[0]), wybierz: () => this.zmienPoz(kl, (x) => { x.jedn = j[0]; }) })),
+        ubytek: ubytek !== null ? 'Wsad ' + ok + this.fN(wej) + ' g → wychodzi ' + this.fN(it.wych) + ' ' + jw + ' · ubytek ' + ok + this.fN(ubytek, 1) + '% (parowanie, obróbka' + (ml ? '; 1 ml ≈ 1 g' : '') + ')' : 'Partia liczona w sztukach — koszt dzieli się na ' + this.fN(it.wych) + ' szt.'
       };
-      const naJ = it.jedn === 'szt' ? 1 : 1000;
-      d.roz = rozwiniecie(naJ, it.jedn === 'szt' ? nomB : nomB / 1000, it.jedn === 'szt' ? 'szt. w 30 dni (nominalnie)' : 'kg w 30 dni (nominalnie)', it.jedn === 'szt' ? 'na 1 szt.' : 'na 1 kg');
+      const naJ = szt ? 1 : 1000;
+      d.roz = rozwiniecie(naJ, szt ? nomB : nomB / 1000, szt ? 'szt. w 30 dni (nominalnie)' : duza + ' w 30 dni (nominalnie)', szt ? 'na 1 szt.' : 'na 1 ' + duza);
       d.gdz = gdzie(it.kod);
       return d;
     }
@@ -2239,6 +2246,10 @@ class Component extends DCLogic {
         const wej = this.masaWejscia(P, it, {});
         return it.nazwa + ': ze wsadu ' + this.fN(wej / 1000) + ' kg wychodzi ' + this.fN(it.wych / 1000) + ' kg. Tę przemianę liczę co do grama.';
       }
+      if (it.jedn === 'ml') {
+        const wej = this.masaWejscia(P, it, {});
+        return it.nazwa + ': ze wsadu ok. ' + this.fN(wej / 1000) + ' kg wychodzi ' + this.fN(it.wych / 1000) + ' l, po ' + this.zl(c.z * 1000) + ' za litr. Odmierzam chochlą, nie na oko.';
+      }
       return it.nazwa + ': z partii ' + this.fN(it.wych, 0) + ' szt., po ' + this.zl(c.z) + ' za sztukę. Chrupią nawet w arkuszu.';
     }
     if (it.poz === 'PRO') return it.nazwa + ': ' + (it.kaw || 0) + ' kawałków, ' + this.zl(c.z) + ' surowca. Każdy gram na swoim miejscu, jak nuty w preludium.';
@@ -2306,6 +2317,9 @@ var URL_BAZY = KONF.url || 'https://srmiealxhcbjornmnboe.supabase.co';
 var KLUCZ = KONF.klucz || 'sb_publishable_NkiS-_7GBmW5d3ufWjjFEg_CuCpaADz';
 var KL = { sesja: 'receptury-sesja', osoby: 'receptury-osoby', motyw: 'receptury-motyw', widok: 'receptury-widok' };
 var WERSJA = (document.querySelector('meta[name="receptury-wersja"]') || {}).content || 'dev';
+/* ikona „i”: stały plik w ORGANIZACJE PRACY › STAŁE LINKI — „receptury.dysza.app — instrukcja A4.pdf” (każdy z linkiem — podgląd);
+   treść podmienia automat ZDZISŁAW Instrukcje, gdy w ORGANIZACJE PRACY pojawi się nowsza „receptury.dysza.app — instrukcja V<x>.<y> A4.pdf” */
+var INSTRUKCJA = KONF.instrukcja || 'https://drive.google.com/uc?export=download&id=1VjMVkQLxhLnp3igokDjhxaqkWrDcK4eN';
 
 /* ───────────── pamięć przeglądarki i sieć (wzór: Utargometr) ───────────── */
 function czytaj(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
@@ -2581,7 +2595,7 @@ class Receptury extends Component {
     const sl = pelne.split(/\s+/).filter(Boolean);
     const inicjaly = ((sl[0] || '?').charAt(0) + (sl.length > 1 ? sl[sl.length - 1].charAt(0) : '')).toUpperCase();
     return { maChip: false, chip: '', inicjaly, imie: ja.imie || ja.login || '', rola: ja.architekt ? 'Architekt' : ja.rola === 'dyrektor' ? 'Dyrektor Produkcji' : 'podgląd',
-      mozeWyloguj: true, wyloguj: () => this.props.app.wyloguj() };
+      mozeWyloguj: true, wyloguj: () => this.props.app.wyloguj(), maInfo: !!INSTRUKCJA, info: INSTRUKCJA };
   }
   stopka() {
     const d = this.props.dane; const e = d.eksport || {}; const sp = d.sprzedaz || {};

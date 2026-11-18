@@ -15,4 +15,7 @@ i adresów osób; wszystko przychodzi z funkcji bazy `receptury_*` i `firmino_to
 Jeden plik `index.html`: ten sam szablon i ta sama logika co w pokazie modułu, mały silnik szablonu bez bibliotek,
 logowanie przez wspólne okno dysza.app (login z karty i PIN z managera).
 
-Wersja 1.1 · 2026-11-18 16:22 · 9937b5e
+Półprodukt liczymy w g, ml albo szt. (np. wywar w ml). Niebieskie „i” obok kafelka z imieniem otwiera aktualną instrukcję (PDF)
+ze stałego linku na Dysku Google — nową wersję podmienia tam automat ZDZISŁAW Instrukcje.
+
+Wersja 1.2 · 2026-11-18 17:01 · 226d633
